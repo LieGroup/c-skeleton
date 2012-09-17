@@ -9,10 +9,10 @@ SOURCES=$(wildcard src/**/*.c src/*.c)
 #把SOURCES中的.c文件替换为.o,并以此定义OBJECTS变量
 OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
-TEST_SRC=$(wildcard test/*_tests.c)
+TEST_SRC=$(wildcard tests/*_tests.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
-TARGET=build/libYOUR_LIBRARY.a
+TARGET=build/libex29.a
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 
 # The Target Build
@@ -36,7 +36,7 @@ build:
 	@mkdir -p bin
 # The Unit Tests
 # .PHOY表明tests是target，而不是指磁盘上的文件夹
-.PHOY: tests
+.PHONY: tests
 tests: CFLAGS += $(TARGET)
 tests: $(TESTS)
 	sh ./tests/runtests.sh
