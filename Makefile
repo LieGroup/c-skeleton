@@ -12,7 +12,7 @@ OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 TEST_SRC=$(wildcard tests/*_tests.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
-TARGET=build/libex29.a
+TARGET=build/liblcthw.a
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 
 # The Target Build
@@ -37,8 +37,11 @@ build:
 # The Unit Tests
 # .PHOY表明tests是target，而不是指磁盘上的文件夹
 .PHONY: tests
-tests: CFLAGS += $(TARGET)
 tests: $(TESTS)
+# 定义多目标规则，展开后等同于将$TESTS_SRC中的每个.c编译链接
+# 因为TESTS文件依赖于静态链接库，静态库必须放在-o之后，否则会找不到静态库函数
+$(TESTS): %: %.c
+	$(CC) $(CFLAGS) $< -o $@ $(TARGET) 
 	sh ./tests/runtests.sh
 valgrind:
 	VALGRIND="valgrind --log-file=/tmp/valgrind-%p.log" $(MAKE)
